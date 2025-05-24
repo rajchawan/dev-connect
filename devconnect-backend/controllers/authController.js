@@ -30,8 +30,21 @@ exports.login = async (req, res) => {
     if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.json({ token });
+
+    // Set JWT as cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // only secure in prod
+      maxAge: 60 * 60 * 1000 // 1 hour
+    });
+
+    res.json({ msg: 'Login successful' });
   } catch (err) {
     res.status(500).send('Server error');
   }
+};
+
+exports.logout = (req, res) => {
+  res.clearCookie('token');
+  res.json({ msg: 'Logged out successfully' });
 };
