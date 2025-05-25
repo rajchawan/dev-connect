@@ -28,20 +28,18 @@ const createFakeUsers = async (count = 10) => {
 };
 
 const createAdmin = async (count = 1) => {
-  for (let i = 0; i < count; i++) {
     const hashedPassword = await bcrypt.hash('password123', 10);
 
     const user = new User({
-      name: faker.person.fullName(),
-      email: faker.internet.email(),
+      name: 'Admin',
+      email: 'admin@example.com',
       password: hashedPassword,
-      skills: [faker.hacker.verb(), faker.hacker.noun()],
-      isAdmin: false,
+      isAdmin: true,
+      skills: ['Admin', 'Moderation']
     });
 
     await user.save();
     console.log(`Created: ${user.email}`);
-  }
 
   mongoose.disconnect();
 };
