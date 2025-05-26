@@ -3,6 +3,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 // await sendEmail(user.email, 'Welcome!', 'Thanks for registering!');
 
+const sendEmail = require('../utils/sendEmail');
+
 exports.register = async (req, res) => {
   const { name, email, password, skills } = req.body;
   try {
@@ -14,9 +16,13 @@ exports.register = async (req, res) => {
     user.password = await bcrypt.hash(password, salt);
     await user.save();
 
+    // Send welcome email after saving the user
+    await sendEmail(user.email, 'Welcome!', 'Thanks for registering!');
+
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.json({ token });
   } catch (err) {
+    console.error(err);
     res.status(500).send('Server error');
   }
 };
@@ -49,7 +55,3 @@ exports.logout = (req, res) => {
   res.clearCookie('token');
   res.json({ msg: 'Logged out successfully' });
 };
-
-const sendEmail = require('../utils/sendEmail');
-// After user creation:
-await sendEmail(user.email, 'Welcome!', 'Thanks for registering!');

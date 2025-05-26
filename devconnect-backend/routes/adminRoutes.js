@@ -3,7 +3,7 @@ const router = express.Router();
 const adminController = require('../controllers/adminController');
 const auth = require('../middlewares/authMiddleware');
 const isAdmin = require('../middlewares/adminMiddleware');
-const checkRole = require('../middlewares/checkRoleMiddleware'); // Include this line
+const checkRole = require('../middlewares/roleCheck'); // Include this line
 
 router.use(auth, isAdmin);
 
