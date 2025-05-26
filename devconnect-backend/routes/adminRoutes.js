@@ -3,10 +3,11 @@ const router = express.Router();
 const adminController = require('../controllers/adminController');
 const auth = require('../middlewares/authMiddleware');
 const isAdmin = require('../middlewares/adminMiddleware');
+const checkRole = require('../middlewares/checkRoleMiddleware'); // Include this line
 
 router.use(auth, isAdmin);
+
 router.get('/users', adminController.getAllUsers);
-router.delete('/user/:id', adminController.deleteUser);
-// router.delete('/post/:id', adminController.deletePost);
+router.delete('/user/:id', checkRole('admin'), adminController.deleteUser);
 
 module.exports = router;

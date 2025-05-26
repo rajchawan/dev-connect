@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 module.exports = async (req, res, next) => {
-  // Get token from cookie or Authorization header
   const token = req.cookies?.token || req.header('Authorization')?.replace('Bearer ', '');
 
   if (!token) {
@@ -12,7 +11,9 @@ module.exports = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = await User.findById(decoded.id).select('-password');
+
     if (!req.user) return res.status(401).json({ msg: 'User not found' });
+
     next();
   } catch (err) {
     res.status(401).json({ msg: 'Token is not valid' });

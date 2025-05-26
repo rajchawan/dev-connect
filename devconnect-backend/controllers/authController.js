@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+// await sendEmail(user.email, 'Welcome!', 'Thanks for registering!');
 
 exports.register = async (req, res) => {
   const { name, email, password, skills } = req.body;
@@ -48,3 +49,7 @@ exports.logout = (req, res) => {
   res.clearCookie('token');
   res.json({ msg: 'Logged out successfully' });
 };
+
+const sendEmail = require('../utils/sendEmail');
+// After user creation:
+await sendEmail(user.email, 'Welcome!', 'Thanks for registering!');

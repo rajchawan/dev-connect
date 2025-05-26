@@ -12,12 +12,15 @@ exports.createPost = async (req, res) => {
 };
 
 exports.getPosts = async (req, res) => {
-  try {
-    const posts = await Post.find().populate('user', 'name');
-    res.json(posts);
-  } catch (err) {
-    res.status(500).json({ msg: 'Server error' });
-  }
+  const { q, page = 1, limit = 10 } = req.query;
+
+  const query = q ? { content: new RegExp(q, 'i') } : {};
+
+  const posts = await Post.find(query)
+    .skip((page - 1) * limit)
+    .limit(parseInt(limit));
+
+  res.json(posts);
 };
 
 exports.likePost = async (req, res) => {
