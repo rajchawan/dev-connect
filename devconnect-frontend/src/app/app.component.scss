@@ -1,0 +1,12 @@
+.main-layout {
+  display: flex;
+
+  .content {
+    flex-grow: 1;
+    padding: 2rem;
+
+    &.with-sidebar {
+      margin-left: 220px; // match sidebar width
+    }
+  }
+}

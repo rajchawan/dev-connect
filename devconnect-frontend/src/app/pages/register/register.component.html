@@ -1,8 +1,12 @@
-<h2>Register</h2>
-<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-  <input type="text" placeholder="Name" formControlName="name" />
-  <input type="email" placeholder="Email" formControlName="email" />
-  <input type="password" placeholder="Password" formControlName="password" />
-  <input type="text" placeholder="Skills (comma-separated)" formControlName="skills" />
-  <button type="submit">Register</button>
-</form>
+<div class="auth-container">
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <h2>Create Account</h2>
+
+    <input type="text" formControlName="name" placeholder="Name" />
+    <input type="email" formControlName="email" placeholder="Email" />
+    <input type="password" formControlName="password" placeholder="Password" />
+    <input type="text" formControlName="skills" placeholder="Skills (comma-separated)" />
+
+    <button type="submit" [disabled]="registerForm.invalid">Register</button>
+  </form>
+</div>
