@@ -26,7 +26,7 @@ export class LoginComponent {
 
   onSubmit() {
     if (this.loginForm.invalid) return;
-
+  
     this.auth.login(this.loginForm.value).subscribe({
       next: () => this.router.navigate(['/dashboard']),
       error: err => alert(err.error.msg || 'Login failed')

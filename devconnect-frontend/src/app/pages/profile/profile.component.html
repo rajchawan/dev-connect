@@ -1,1 +1,13 @@
-<p>profile works!</p>
+<div class="profile-container" *ngIf="user">
+  <div class="profile-card">
+    <div class="avatar">
+      <img src="https://i.pravatar.cc/150?img=12" alt="User Avatar">
+    </div>
+    <div class="user-info">
+      <h2>{{ user?.name }}</h2>
+      <!-- <p>Email: johndoe@example.com</p> -->
+      <p>Joined: January 1, 2024</p>
+    </div>
+    <button class="edit-btn">Edit Profile</button>
+  </div>
+</div>

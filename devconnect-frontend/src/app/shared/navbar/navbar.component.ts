@@ -1,22 +1,21 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';  // ✅ Import this
+import { RouterModule } from '@angular/router';  // ✅ Also needed for routerLink
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [],
+  imports: [CommonModule, RouterModule],  // ✅ Add CommonModule and RouterModule
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent {
-  constructor(private router: Router) {}
-
   isLoggedIn(): boolean {
     return !!localStorage.getItem('token');
   }
 
   logout() {
     localStorage.removeItem('token');
-    this.router.navigate(['/login']);
+    window.location.href = '/login';
   }
 }

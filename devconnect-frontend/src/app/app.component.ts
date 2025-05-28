@@ -1,17 +1,23 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router'; // ✅ Add this
+import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { SidebarComponent } from './shared/sidebar/sidebar.component';
+import { AuthService } from './services/auth.service'; // ✅
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterModule, NavbarComponent, SidebarComponent],
+  imports: [CommonModule, RouterModule, NavbarComponent, SidebarComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
+  loggedIn = false;
+
+  constructor(private auth: AuthService) {
+    this.auth.isLoggedIn$.subscribe((status) => {
+      this.loggedIn = status;
+    });
   }
 }
