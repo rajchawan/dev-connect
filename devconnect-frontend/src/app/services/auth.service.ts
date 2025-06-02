@@ -14,12 +14,19 @@ export class AuthService {
   isLoggedIn$ = this.isLoggedInSubject.asObservable();
 
   constructor(private http: HttpClient) {
-    // Load user from localStorage if present
     const savedUser = localStorage.getItem('user');
-    if (savedUser) {
-      this.currentUserSubject.next(JSON.parse(savedUser));
+  
+    try {
+      // ✅ Make sure the value is valid and not the string "undefined"
+      if (savedUser && savedUser !== 'undefined' && savedUser !== 'null') {
+        const parsedUser = JSON.parse(savedUser);
+        this.currentUserSubject.next(parsedUser);
+      }
+    } catch (error) {
+      console.error('Failed to parse user from localStorage:', error);
+      localStorage.removeItem('user'); // Clean up bad value
     }
-  }
+  }  
 
   register(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, data);
