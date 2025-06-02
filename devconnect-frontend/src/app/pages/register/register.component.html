@@ -1,11 +1,47 @@
-<div class="auth-container">
+<div class="register-card">
   <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
     <h2>Create Account</h2>
 
-    <input type="text" formControlName="name" placeholder="Name" />
-    <input type="email" formControlName="email" placeholder="Email" />
-    <input type="password" formControlName="password" placeholder="Password" />
-    <input type="text" formControlName="skills" placeholder="Skills (comma-separated)" />
+    <!-- Name Field -->
+    <div class="form-group">
+      <input type="text" formControlName="name" placeholder="Name" />
+      <div class="error" *ngIf="name.invalid && (name.dirty || name.touched)">
+        <small>Name is required</small>
+      </div>
+    </div>
+
+    <!-- Email Field -->
+    <div class="form-group">
+      <input type="email" formControlName="email" placeholder="Email" />
+      <div class="error" *ngIf="email.invalid && (email.dirty || email.touched)">
+        <small *ngIf="email.errors?.['required']">Email is required</small>
+        <small *ngIf="email.errors?.['email']">Invalid email format</small>
+      </div>
+    </div>
+
+    <!-- Password Field -->
+    <div class="form-group password-group">
+      <input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Password" />
+      <button type="button" class="toggle" (click)="togglePasswordVisibility()">
+        {{ showPassword ? 'Hide' : 'Show' }}
+      </button>
+      <div class="error" *ngIf="password.invalid && (password.dirty || password.touched)">
+        <small *ngIf="password.errors?.['required']">Password is required</small>
+        <small *ngIf="password.errors?.['minlength']">
+          Password must be at least 6 characters
+        </small>
+      </div>
+    </div>
+
+    <!-- Skills Field -->
+    <div class="form-group">
+      <input type="text" formControlName="skills" placeholder="Skills (comma-separated)" />
+    </div>
+
+    <!-- General Error Message -->
+    <div class="general-error" *ngIf="registerError">
+      <small>{{ registerError }}</small>
+    </div>
 
     <button type="submit" [disabled]="registerForm.invalid">Register</button>
   </form>

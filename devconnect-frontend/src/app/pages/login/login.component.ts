@@ -8,10 +8,13 @@ import { CommonModule } from '@angular/common';
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './login.component.html'
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
   loginForm: FormGroup;
+  showPassword = false;
+  loginError = '';
 
   constructor(
     private fb: FormBuilder,
@@ -24,12 +27,27 @@ export class LoginComponent {
     });
   }
 
+  get email() {
+    return this.loginForm.get('email')!;
+  }
+
+  get password() {
+    return this.loginForm.get('password')!;
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+
   onSubmit() {
+    this.loginError = ''; // reset error
     if (this.loginForm.invalid) return;
-  
+
     this.auth.login(this.loginForm.value).subscribe({
       next: () => this.router.navigate(['/dashboard']),
-      error: err => alert(err.error.msg || 'Login failed')
+      error: err => {
+        this.loginError = err?.error?.msg || 'Login failed. Please try again.';
+      }
     });
   }
 }

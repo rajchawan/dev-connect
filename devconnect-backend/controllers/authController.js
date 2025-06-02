@@ -7,6 +7,7 @@ const sendEmail = require('../utils/sendEmail');
 
 exports.register = async (req, res) => {
   const { name, email, password, skills } = req.body;
+
   try {
     let user = await User.findOne({ email });
     if (user) return res.status(400).json({ msg: 'User already exists' });
@@ -16,8 +17,11 @@ exports.register = async (req, res) => {
     user.password = await bcrypt.hash(password, salt);
     await user.save();
 
-    // Send welcome email after saving the user
-    await sendEmail(user.email, 'Welcome!', 'Thanks for registering!');
+    try {
+      await sendEmail(user.email, 'Welcome!', 'Thanks for registering!');
+    } catch (emailErr) {
+      console.error('Email error:', emailErr.message);
+    }
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.json({ token });

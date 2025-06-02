@@ -8,10 +8,13 @@ import { CommonModule } from '@angular/common';
   selector: 'app-register',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './register.component.html'
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
   registerForm: FormGroup;
+  showPassword = false;
+  registerError = '';
 
   constructor(
     private fb: FormBuilder,
@@ -26,12 +29,31 @@ export class RegisterComponent {
     });
   }
 
+  get name() {
+    return this.registerForm.get('name')!;
+  }
+
+  get email() {
+    return this.registerForm.get('email')!;
+  }
+
+  get password() {
+    return this.registerForm.get('password')!;
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+
   onSubmit() {
+    this.registerError = '';
     if (this.registerForm.invalid) return;
 
     this.auth.register(this.registerForm.value).subscribe({
       next: () => this.router.navigate(['/login']),
-      error: err => alert(err.error.msg || 'Registration failed')
+      error: err => {
+        this.registerError = err?.error?.msg || 'Registration failed. Please try again.';
+      }
     });
   }
 }

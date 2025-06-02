@@ -1,9 +1,31 @@
-<div class="auth-container">
+<div class="login-card">
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
     <h2>Login</h2>
 
-    <input type="email" formControlName="email" placeholder="Email" />
-    <input type="password" formControlName="password" placeholder="Password" />
+    <!-- Email Field -->
+    <div class="form-group">
+      <input type="email" formControlName="email" placeholder="Email" />
+      <div class="error" *ngIf="email.invalid && (email.dirty || email.touched)">
+        <small *ngIf="email.errors?.['required']">Email is required</small>
+        <small *ngIf="email.errors?.['email']">Invalid email format</small>
+      </div>
+    </div>
+
+    <!-- Password Field with toggle -->
+    <div class="form-group password-group">
+      <input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Password" />
+      <button type="button" class="toggle" (click)="togglePasswordVisibility()">
+        {{ showPassword ? 'Hide' : 'Show' }}
+      </button>
+      <div class="error" *ngIf="password.invalid && (password.dirty || password.touched)">
+        <small>Password is required</small>
+      </div>
+    </div>
+
+    <!-- General Error Message -->
+    <div class="general-error" *ngIf="loginError">
+      <small>{{ loginError }}</small>
+    </div>
 
     <button type="submit" [disabled]="loginForm.invalid">Login</button>
   </form>
