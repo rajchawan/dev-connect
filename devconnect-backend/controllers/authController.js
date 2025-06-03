@@ -40,16 +40,16 @@ exports.login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
     // Set JWT as cookie
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // only secure in prod
-      maxAge: 60 * 60 * 1000 // 1 hour
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
     });
 
-    res.json({ msg: 'Login successful' });
+    res.json({ token, user });
   } catch (err) {
     res.status(500).send('Server error');
   }
@@ -58,4 +58,17 @@ exports.login = async (req, res) => {
 exports.logout = (req, res) => {
   res.clearCookie('token');
   res.json({ msg: 'Logged out successfully' });
+};
+
+exports.getCurrentUser = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ msg: 'Unauthorized' });
+    }
+
+    res.json(req.user); // user is set by authMiddleware
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
 };
