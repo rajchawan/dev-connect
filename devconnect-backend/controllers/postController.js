@@ -1,12 +1,16 @@
-const Post = require('../models/Post');
+const { Post, User } = require('../models');
+const { Op } = require('sequelize');
 
 exports.createPost = async (req, res) => {
   const { content } = req.body;
   try {
-    const post = new Post({ user: req.user.id, content });
-    await post.save();
+    const post = await Post.create({
+      content,
+      userId: req.user.id
+    });
     res.json(post);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ msg: 'Server error' });
   }
 };
@@ -14,24 +18,58 @@ exports.createPost = async (req, res) => {
 exports.getPosts = async (req, res) => {
   const { q, page = 1, limit = 10 } = req.query;
 
-  const query = q ? { content: new RegExp(q, 'i') } : {};
+  const whereClause = q
+    ? { content: { [Op.iLike]: `%${q}%` } }
+    : {};
 
-  const posts = await Post.find(query)
-    .skip((page - 1) * limit)
-    .limit(parseInt(limit));
+  try {
+    const posts = await Post.findAll({
+      where: whereClause,
+      limit: parseInt(limit),
+      offset: (page - 1) * limit,
+      order: [['createdAt', 'DESC']],
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'name', 'email']
+        }
+      ]
+    });
 
-  res.json(posts);
+    res.json(posts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'Server error' });
+  }
 };
 
 exports.likePost = async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
-    if (!post.likes.includes(req.user.id)) {
-      post.likes.push(req.user.id);
-      await post.save();
+    const post = await Post.findByPk(req.params.id);
+
+    if (!post) return res.status(404).json({ msg: 'Post not found' });
+
+    // Check if user already liked the post
+    const alreadyLiked = await post.hasLike(req.user.id);
+
+    if (!alreadyLiked) {
+      await post.addLike(req.user.id);
     }
-    res.json(post);
+
+    // Return updated post with likes count
+    const updatedPost = await Post.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          as: 'Likes',
+          attributes: ['id', 'name', 'email']
+        }
+      ]
+    });
+
+    res.json(updatedPost);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ msg: 'Server error' });
   }
 };

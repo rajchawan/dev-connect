@@ -49,14 +49,14 @@ module.exports = (sequelize, DataTypes) => {
   User.associate = models => {
     User.belongsToMany(models.User, {
       as: 'Followers',
-      through: 'UserFollowers',
+      through: 'Follows',
       foreignKey: 'followingId',
       otherKey: 'followerId'
     });
 
     User.belongsToMany(models.User, {
       as: 'Following',
-      through: 'UserFollowers',
+      through: 'Follows',
       foreignKey: 'followerId',
       otherKey: 'followingId'
     });

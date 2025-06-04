@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const { User } = require('../models');
 
 module.exports = async (req, res, next) => {
   const token = req.cookies?.token || req.header('Authorization')?.replace('Bearer ', '');
@@ -10,12 +10,17 @@ module.exports = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await User.findById(decoded.id).select('-password');
+    
+    // Sequelize: use findByPk instead of findById
+    const user = await User.findByPk(decoded.id, {
+      attributes: { exclude: ['password'] }
+    });
 
-    if (!req.user) return res.status(401).json({ msg: 'User not found' });
+    if (!user) return res.status(401).json({ msg: 'User not found' });
 
+    req.user = user;
     next();
   } catch (err) {
-    res.status(401).json({ msg: 'Token is not valid' });
+    return res.status(401).json({ msg: 'Token is not valid' });
   }
 };
