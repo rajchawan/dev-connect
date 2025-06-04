@@ -1,18 +1,13 @@
-<!-- profile.component.html -->
 <div class="profile-container">
   <div class="profile-card">
-    <div *ngIf="loading" class="loading">Loading...</div>
-    <div *ngIf="error" class="error">{{ error }}</div>
-    <div *ngIf="!loading && !error">
-      <div class="avatar">
-        <img src="https://i.pravatar.cc/150?img=12" alt="User Avatar">
-      </div>
-      <div class="user-info">
-        <h2>{{ user?.name || 'Unknown User' }}</h2>
-        <p>{{ user?.email || 'example.com' }}</p>
-        <p>Joined: {{ user?.createdAt ? (user.createdAt | date:'mediumDate') : 'N/A' }}</p>
-      </div>
-      <button class="edit-btn">Edit Profile</button>
+    <div class="avatar">
+      <img src="https://i.pravatar.cc/150?img=12" alt="User Avatar">
     </div>
+    <div class="user-info">
+      <!-- <h2>{{ user.name }}</h2> -->
+      <p>emxample.com</p>
+      <p>Joined: January 1, 2024</p>
+    </div>
+    <button class="edit-btn">Edit Profile</button>
   </div>
 </div>

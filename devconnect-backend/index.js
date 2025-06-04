@@ -1,6 +1,5 @@
 require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose');
 const rateLimit = require('./middlewares/rateLimit');
 const cors = require('cors');
 const morgan = require('morgan');
@@ -14,12 +13,11 @@ const commentRoutes = require('./routes/commentRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 
 // Database config
-const connectDB = require('./config/db');
+const { connectDB } = require('./config/db');
+const app = express();
 
-// Connect to DB
 connectDB();
 
-const app = express();
 
 app.use(cors({
   origin: 'http://localhost:4200',  // Angular dev server URL

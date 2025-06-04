@@ -1,23 +1,30 @@
-const mongoose = require('mongoose');
+module.exports = (sequelize, DataTypes) => {
+  const Comment = sequelize.define('Comment', {
+    text: {
+      type: DataTypes.STRING(500),
+      allowNull: false,
+      validate: {
+        notNull: { msg: 'Comment text is required' },
+        len: {
+          args: [1, 500],
+          msg: 'Comment must be between 1 and 500 characters'
+        }
+      }
+    }
+  }, {
+    timestamps: true
+  });
 
-const CommentSchema = new mongoose.Schema({
-  post: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'Post', 
-    required: [true, 'Post ID is required'] 
-  },
-  user: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User', 
-    required: [true, 'User ID is required'] 
-  },
-  text: { 
-    type: String, 
-    required: [true, 'Comment text is required'], 
-    minlength: [1, 'Comment cannot be empty'], 
-    maxlength: [500, 'Comment text is too long (max 500 characters)'] 
-  },
-  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-}, { timestamps: true });
+  Comment.associate = models => {
+    Comment.belongsTo(models.Post, { foreignKey: 'postId', allowNull: false });
+    Comment.belongsTo(models.User, { foreignKey: 'userId', allowNull: false });
+    Comment.belongsToMany(models.User, {
+      through: 'CommentLikes',
+      as: 'Likes',
+      foreignKey: 'commentId',
+      otherKey: 'userId'
+    });
+  };
 
-module.exports = mongoose.model('Comment', CommentSchema);
+  return Comment;
+};

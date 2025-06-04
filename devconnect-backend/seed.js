@@ -1,151 +1,136 @@
-const mongoose = require('mongoose');
-const { faker } = require('@faker-js/faker');
-const bcrypt = require('bcryptjs');
+// const bcrypt = require('bcryptjs');
+// const { faker } = require('@faker-js/faker');
+// const { Sequelize, sequelize, User, Post, Comment, Notification } = require('./models'); // Adjust import as needed
 
-const User = require('./models/User');
-const Post = require('./models/Post');
-const Comment = require('./models/Comment');
-const Notification = require('./models/Notification');
+// const USERS_COUNT = 25; // More than 20 users
+// const POSTS_MIN = 2;
+// const POSTS_MAX = 4;
+// const COMMENTS_MIN = 2;
+// const COMMENTS_MAX = 4;
 
-mongoose.connect('mongodb://localhost:27017/devconnect')
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error(err));
+// const seedData = async () => {
+//   try {
+//     await sequelize.sync({ force: true }); // Drops & recreates tables
 
-const USERS_COUNT = 10;
+//     // Create users
+//     const users = [];
+//     for (let i = 0; i < USERS_COUNT; i++) {
+//       const hashedPassword = await bcrypt.hash('password123', 10);
+//       const user = await User.create({
+//         name: faker.person.fullName(),
+//         email: faker.internet.email(),
+//         password: hashedPassword,
+//         skills: [faker.hacker.verb(), faker.hacker.noun()].join(','),
+//         isAdmin: false
+//       });
+//       users.push(user);
+//     }
 
-const seedData = async () => {
-  await mongoose.connection.dropDatabase();
+//     // Create admin user
+//     const hashedAdminPassword = await bcrypt.hash('password123', 10);
+//     const admin = await User.create({
+//       name: 'Admin',
+//       email: 'admin@example.com',
+//       password: hashedAdminPassword,
+//       skills: 'Admin,Moderation',
+//       isAdmin: true
+//     });
+//     users.push(admin);
 
-  const users = [];
+//     Create posts
+//     const posts = [];
+//       for (const user of users) {
+//         const postCount = faker.number.int({ min: POSTS_MIN, max: POSTS_MAX });
+//         for (let i = 0; i < postCount; i++) {
+//           const post = await Post.create({
+//             userId: user.id,
+//             content: faker.lorem.paragraph()
+//           });
+//           posts.push(post);
+//         }
+//     }
 
-  // Create regular users
-  for (let i = 0; i < USERS_COUNT; i++) {
-    const hashedPassword = await bcrypt.hash('password123', 10);
-    const user = new User({
-      name: faker.person.fullName(),
-      email: faker.internet.email(),
-      password: hashedPassword,
-      skills: [faker.hacker.verb(), faker.hacker.noun()],
-      isAdmin: false,
-    });
-    await user.save();
-    users.push(user);
-    console.log(`Created user: ${user.email}`);
-  }
+//     // Create comments
+//     // const comments = [];
+//     // for (const post of posts) {
+//     //   const commentCount = faker.number.int({ min: COMMENTS_MIN, max: COMMENTS_MAX });
+//     //   for (let i = 0; i < commentCount; i++) {
+//     //     const commenter = faker.helpers.arrayElement(users);
+//     //     const comment = await Comment.create({
+//     //       postId: post.id,
+//     //       userId: commenter.id,
+//     //       text: faker.lorem.sentence()
+//     //     });
+//     //     comments.push(comment);
 
-  // Create admin user
-  const hashedAdminPassword = await bcrypt.hash('password123', 10);
-  const admin = new User({
-    name: 'Admin',
-    email: 'admin@example.com',
-    password: hashedAdminPassword,
-    isAdmin: true,
-    skills: ['Admin', 'Moderation']
-  });
-  await admin.save();
-  users.push(admin);
-  console.log('Created admin user');
+//     //     // Notification for comment
+//     //     if (post.userId !== commenter.id) {
+//     //       await Notification.create({
+//     //         recipientId: post.userId,
+//     //         senderId: commenter.id,
+//     //         type: 'comment',
+//     //         postId: post.id
+//     //       });
+//     //     }
+//     //   }
+//     // }
 
-  const posts = [];
+//     // Add likes to posts and comments (using through table or simple array depending on your schema)
+//     // for (const post of posts) {
+//     //   const likeUsers = faker.helpers.arrayElements(users, faker.number.int({ min: 1, max: 5 }));
+//     //   for (const liker of likeUsers) {
+//     //     // Assuming you have a PostLike model
+//     //     await post.addLike(liker);
 
-  // Create posts for each user
-  for (const user of users) {
-    const postCount = faker.number.int({ min: 1, max: 2 });
-    for (let i = 0; i < postCount; i++) {
-      const post = new Post({
-        user: user._id,
-        content: faker.lorem.paragraph(),
-        likes: []
-      });
-      await post.save();
-      posts.push(post);
-    }
-  }
+//     //     if (post.userId !== liker.id) {
+//     //       await Notification.create({
+//     //         recipientId: post.userId,
+//     //         senderId: liker.id,
+//     //         type: 'like',
+//     //         postId: post.id
+//     //       });
+//     //     }
+//     //   }
+//     // }
 
-  const comments = [];
+//     // for (const comment of comments) {
+//     //   const likeUsers = faker.helpers.arrayElements(users, faker.number.int({ min: 1, max: 4 }));
+//     //   for (const liker of likeUsers) {
+//     //     // Assuming you have a CommentLike model
+//     //     await comment.addLike(liker);
 
-  // Create comments for each post
-  for (const post of posts) {
-    const commentCount = faker.number.int({ min: 1, max: 3 });
-    for (let i = 0; i < commentCount; i++) {
-      const commenter = faker.helpers.arrayElement(users);
-      const comment = new Comment({
-        post: post._id,
-        user: commenter._id,
-        text: faker.lorem.sentence(),
-        likes: []
-      });
-      await comment.save();
-      comments.push(comment);
+//     //     if (comment.userId !== liker.id) {
+//     //       await Notification.create({
+//     //         recipientId: comment.userId,
+//     //         senderId: liker.id,
+//     //         type: 'like',
+//     //         postId: comment.postId
+//     //       });
+//     //     }
+//     //   }
+//     // }
 
-      // Notification for comment
-      if (String(post.user) !== String(commenter._id)) {
-        await Notification.create({
-          recipient: post.user,
-          sender: commenter._id,
-          type: 'comment',
-          post: post._id
-        });
-      }
-    }
-  }
+//     // Create random followers
+//   //   for (const user of users) {
+//   //     const followees = faker.helpers.arrayElements(users.filter(u => u.id !== user.id), faker.number.int({ min: 2, max: 5 }));
+//   //     for (const followee of followees) {
+//   //       // Assuming you have a UserFollowers join table (many-to-many)
+//   //       await user.addFollowing(followee);
 
-  // Add likes to posts and comments
-  for (const post of posts) {
-    const likeUsers = faker.helpers.arrayElements(users, faker.number.int({ min: 0, max: 3 }));
-    for (const liker of likeUsers) {
-      if (!post.likes.includes(liker._id)) {
-        post.likes.push(liker._id);
+//   //       await Notification.create({
+//   //         recipientId: followee.id,
+//   //         senderId: user.id,
+//   //         type: 'follow'
+//   //       });
+//   //     }
+//   //   }
 
-        // Notification for like
-        if (String(post.user) !== String(liker._id)) {
-          await Notification.create({
-            recipient: post.user,
-            sender: liker._id,
-            type: 'like',
-            post: post._id
-          });
-        }
-      }
-    }
-    await post.save();
-  }
+//     console.log('Seeding completed!');
+//     await sequelize.close();
+//   } catch (err) {
+//     console.error(err);
+//     await sequelize.close();
+//   }
+// };
 
-  for (const comment of comments) {
-    const likeUsers = faker.helpers.arrayElements(users, faker.number.int({ min: 0, max: 2 }));
-    for (const liker of likeUsers) {
-      if (!comment.likes.includes(liker._id)) {
-        comment.likes.push(liker._id);
-        await Notification.create({
-          recipient: comment.user,
-          sender: liker._id,
-          type: 'like',
-          post: comment.post
-        });
-      }
-    }
-    await comment.save();
-  }
-
-  // Random followers
-  for (const user of users) {
-    const followees = faker.helpers.arrayElements(users.filter(u => u._id !== user._id), faker.number.int({ min: 1, max: 4 }));
-    for (const followee of followees) {
-      if (!user.following.includes(followee._id)) {
-        user.following.push(followee._id);
-        followee.followers.push(user._id);
-        await Notification.create({
-          recipient: followee._id,
-          sender: user._id,
-          type: 'follow'
-        });
-      }
-    }
-    await user.save();
-  }
-
-  console.log('Seeding completed!');
-  mongoose.disconnect();
-};
-
-seedData();
+// seedData();

@@ -1,18 +1,31 @@
-const mongoose = require('mongoose');
+module.exports = (sequelize, DataTypes) => {
+  const Post = sequelize.define('Post', {
+    content: {
+      type: DataTypes.STRING(1000),
+      allowNull: false,
+      validate: {
+        notNull: { msg: 'Post content is required' },
+        len: {
+          args: [1, 1000],
+          msg: 'Post must be between 1 and 1000 characters'
+        }
+      }
+    }
+  }, {
+    timestamps: true
+  });
 
-const PostSchema = new mongoose.Schema({
-  user: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User', 
-    required: [true, 'User ID is required'] 
-  },
-  content: { 
-    type: String, 
-    required: [true, 'Post content is required'], 
-    minlength: [1, 'Post cannot be empty'], 
-    maxlength: [1000, 'Post content is too long (max 1000 characters)']
-  },
-  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-}, { timestamps: true });
+  Post.associate = models => {
+    Post.belongsTo(models.User, { foreignKey: 'userId', allowNull: false });
+    Post.belongsToMany(models.User, {
+      through: 'PostLikes',
+      as: 'Likes',
+      foreignKey: 'postId',
+      otherKey: 'userId'
+    });
+    Post.hasMany(models.Comment, { foreignKey: 'postId' });
+    Post.hasMany(models.Notification, { foreignKey: 'postId' });
+  };
 
-module.exports = mongoose.model('Post', PostSchema);
+  return Post;
+};

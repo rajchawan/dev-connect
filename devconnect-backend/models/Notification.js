@@ -1,26 +1,27 @@
-const mongoose = require('mongoose');
-
-const NotificationSchema = new mongoose.Schema({
-  recipient: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User', 
-    required: [true, 'Recipient is required'] 
-  },
-  sender: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User', 
-    required: [true, 'Sender is required'] 
-  },
-  type: { 
-    type: String, 
-    enum: {
-      values: ['like', 'comment', 'follow'],
-      message: 'Notification type must be like, comment, or follow'
-    },
-    required: [true, 'Notification type is required']
-  },
-  post: { type: mongoose.Schema.Types.ObjectId, ref: 'Post' },
-  read: { type: Boolean, default: false },
-}, { timestamps: true });
-
-module.exports = mongoose.model('Notification', NotificationSchema);
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class Notification extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+    }
+  }
+  Notification.init({
+    recipientId: DataTypes.INTEGER,
+    senderId: DataTypes.INTEGER,
+    type: DataTypes.STRING,
+    postId: DataTypes.INTEGER,
+    read: DataTypes.BOOLEAN
+  }, {
+    sequelize,
+    modelName: 'Notification',
+  });
+  return Notification;
+};
