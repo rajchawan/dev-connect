@@ -1,9 +1,21 @@
 <div class="post-feed-wrapper">
   <div class="post-container">
+
+    <!-- Create Post Form -->
+    <div class="create-post" *ngIf="currentUser">
+      <div class="create-post-header">
+        <img class="avatar" [src]="getUserAvatar(currentUser.avatar)" alt="avatar" />
+        <textarea [(ngModel)]="newPostContent" placeholder="What's on your mind?" rows="3"></textarea>
+      </div>
+      <div class="create-post-actions">
+        <button (click)="createPost()" [disabled]="!newPostContent.trim()">Post</button>
+      </div>
+    </div>
+
+    <!-- Posts List -->
     <div class="post" *ngFor="let post of posts">
-      <!-- User Info -->
       <div class="post-header">
-        <img class="avatar" [src]="getUserAvatar(post.User?.avatar)" alt="avatar" />
+        <img class="avatar" [src]="getUserAvatar(post.user?.avatar)" alt="avatar" />
         <div>
           <strong>{{ post.user?.name || 'Unknown' }}</strong>
           <br />
@@ -11,12 +23,10 @@
         </div>
       </div>
 
-      <!-- Post Content -->
       <div class="post-content">
         <p>{{ post.content }}</p>
       </div>
 
-      <!-- Actions -->
       <div class="post-actions">
         <span class="likes">{{ post.likesCount || 0 }} Likes</span>
         <span class="comments">{{ post.commentsCount || 0 }} Comments</span>

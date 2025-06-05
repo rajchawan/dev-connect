@@ -8,7 +8,33 @@ exports.createPost = async (req, res) => {
       content,
       userId: req.user.id
     });
-    res.json(post);
+
+    const fullPost = await Post.findByPk(post.id, {
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'name', 'email', 'avatar']
+        },
+        {
+          model: User,
+          as: 'Likes',
+          attributes: ['id']
+        },
+        {
+          model: Comment,
+          attributes: ['id']
+        }
+      ]
+    });
+
+    res.json({
+      id: fullPost.id,
+      content: fullPost.content,
+      createdAt: fullPost.createdAt,
+      user: fullPost.User,
+      likesCount: fullPost.Likes.length,
+      commentsCount: fullPost.Comments.length
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ msg: 'Server error' });
@@ -16,7 +42,7 @@ exports.createPost = async (req, res) => {
 };
 
 exports.getPosts = async (req, res) => {
-  const { q, page = 1, limit = 10 } = req.query;
+  const { q, page = 1, limit = 100 } = req.query;
 
   const whereClause = q
     ? { content: { [Op.iLike]: `%${q}%` } }

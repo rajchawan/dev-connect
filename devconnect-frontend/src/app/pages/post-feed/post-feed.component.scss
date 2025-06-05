@@ -62,3 +62,55 @@ button {
   color: #0a66c2;
   font-weight: 500;
 }
+
+.create-post {
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+  .create-post-header {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+
+    .avatar {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    textarea {
+      flex: 1;
+      resize: none;
+      padding: 0.5rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+  }
+
+  .create-post-actions {
+    display: flex;
+    justify-content: flex-end;
+
+    button {
+      background-color: #0a66c2;
+      color: white;
+      border: none;
+      padding: 0.4rem 1.2rem;
+      border-radius: 9999px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #004182;
+      }
+
+      &:disabled {
+        background-color: #aaa;
+        cursor: not-allowed;
+      }
+    }
+  }
+}

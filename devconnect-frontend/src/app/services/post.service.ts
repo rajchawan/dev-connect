@@ -1,7 +1,21 @@
-// src/app/services/post.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+
+// Optional: define Post interface for type safety
+export interface Post {
+  id: number;
+  content: string;
+  createdAt: string;
+  user: {
+    id: number;
+    name: string;
+    email?: string;
+    avatar?: string;
+  };
+  likesCount: number;
+  commentsCount: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -14,25 +28,29 @@ export class PostService {
   /**
    * Fetch all posts from the backend.
    * Automatically includes credentials (cookies) in the request.
+   * @param params - Optional query parameters like page, limit, search
    */
-  getAllPosts(): Observable<any> {
-    return this.http.get(this.apiUrl, { withCredentials: true });
+  getAllPosts(params?: any): Observable<Post[]> {
+    return this.http.get<Post[]>(this.apiUrl, {
+      withCredentials: true,
+      params
+    });
   }
 
   /**
    * Create a new post.
    * Includes user session via cookies.
-   * @param content - Post content
+   * @param data - Object with content property
    */
-  createPost(content: string): Observable<any> {
-    return this.http.post(this.apiUrl, { content }, { withCredentials: true });
+  createPost(data: { content: string }): Observable<Post> {
+    return this.http.post<Post>(this.apiUrl, data, { withCredentials: true });
   }
 
   /**
    * Like a post by its ID.
    * @param postId - ID of the post
    */
-  likePost(postId: string): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${postId}/like`, {}, { withCredentials: true });
+  likePost(postId: string): Observable<Post> {
+    return this.http.put<Post>(`${this.apiUrl}/${postId}/like`, {}, { withCredentials: true });
   }
 }
