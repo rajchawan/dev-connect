@@ -12,6 +12,7 @@ module.exports = {
       userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        field: 'userId', // THIS is required
         references: {
           model: 'Users',
           key: 'id'

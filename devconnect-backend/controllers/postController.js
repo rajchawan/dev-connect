@@ -1,4 +1,4 @@
-const { Post, User } = require('../models');
+const { Post, User, Comment } = require('../models');
 const { Op } = require('sequelize');
 
 exports.createPost = async (req, res) => {
@@ -31,12 +31,31 @@ exports.getPosts = async (req, res) => {
       include: [
         {
           model: User,
-          attributes: ['id', 'name', 'email']
+          attributes: ['id', 'name', 'email', 'avatar'] // include avatar
+        },
+        {
+          model: User,
+          as: 'Likes',
+          attributes: ['id'] // for count
+        },
+        {
+          model: Comment,
+          attributes: ['id'] // for count
         }
       ]
     });
 
-    res.json(posts);
+    // Map response to include counts
+    const formatted = posts.map(post => ({
+      id: post.id,
+      content: post.content,
+      createdAt: post.createdAt,
+      user: post.User,
+      likesCount: post.Likes.length,
+      commentsCount: post.Comments.length
+    }));
+
+    res.json(formatted);
   } catch (err) {
     console.error(err);
     res.status(500).json({ msg: 'Server error' });

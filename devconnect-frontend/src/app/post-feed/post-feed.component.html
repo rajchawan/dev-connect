@@ -1,7 +1,31 @@
-<!-- src/app/post-feed/post-feed.component.html -->
-<div class="post-container">
-  <div class="post" *ngFor="let post of posts">
-    <p>{{ post.content }}</p>
-    <small>By: {{ post.User?.name || 'Unknown' }}</small>
+<div class="post-feed-wrapper">
+  <div class="post-container">
+    <div class="post" *ngFor="let post of posts">
+      <!-- User Info -->
+      <div class="post-header">
+        <img class="avatar" [src]="getUserAvatar(post.User?.avatar)" alt="avatar" />
+        <div>
+          <strong>{{ post.User?.name || 'Unknown' }}</strong>
+          <br />
+          <small>Posted {{ getTimeAgo(post.createdAt) }}</small>
+        </div>
+      </div>
+
+      <!-- Post Content -->
+      <div class="post-content">
+        <p>{{ post.content }}</p>
+      </div>
+
+      <!-- Actions -->
+      <div class="post-actions">
+        <span class="likes">{{ post.likesCount || 0 }} Likes</span>
+        <span class="comments">{{ post.commentsCount || 0 }} Comments</span>
+      </div>
+
+      <div class="action-buttons">
+        <button>Like</button>
+        <button>Comment</button>
+      </div>
+    </div>
   </div>
 </div>
