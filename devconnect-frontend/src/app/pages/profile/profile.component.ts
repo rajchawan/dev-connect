@@ -36,7 +36,7 @@ export class ProfileComponent implements OnInit {
 
   getAvatarUrl(): string {
     return this.user?.avatar
-      ? `http://localhost:3000/uploads/${this.user.avatar}`
+      ? `http://localhost:5000/uploads/${this.user.avatar}`
       : 'assets/icons/camera-icon.png';
   }
 
@@ -50,15 +50,17 @@ export class ProfileComponent implements OnInit {
 
   uploadAvatar(): void {
     if (!this.selectedAvatar) return;
-
+  
     const formData = new FormData();
     formData.append('avatar', this.selectedAvatar);
-
+    formData.append('name', this.user.name);
+    formData.append('skills', this.skills); // comma-separated string
+  
     const token = localStorage.getItem('token');
     this.http.put(this.AVATAR_URL, formData, {
       headers: { Authorization: `Bearer ${token}` }
     }).subscribe({
-      next: (res) => this.ngOnInit(), // reload profile
+      next: (res) => this.ngOnInit(),
       error: (err) => console.error('Avatar upload failed', err)
     });
   }

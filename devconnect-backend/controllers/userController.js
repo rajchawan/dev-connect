@@ -16,19 +16,33 @@ exports.getProfile = async (req, res) => {
 
 // Update current user's profile
 exports.updateProfile = async (req, res) => {
+  console.log('Received file:', req.file); // <-- log this
+  console.log('Received body:', req.body); // <-- and this
+
   const { name, skills } = req.body;
+  const avatar = req.file ? req.file.filename : undefined;
+
   try {
-    const [_, [updatedUser]] = await User.update(
-      { name, skills },
-      {
-        where: { id: req.user.id },
-        returning: true
-      }
-    );
+    const updateData = {};
+
+    if (name) updateData.name = name;
+    if (skills) {
+      updateData.skills = Array.isArray(skills)
+        ? skills
+        : skills.split(',').map(s => s.trim());
+    }
+
+    if (avatar) updateData.avatar = avatar;
+
+    const [_, [updatedUser]] = await User.update(updateData, {
+      where: { id: req.user.id },
+      returning: true
+    });
+
     res.json(updatedUser);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ msg: 'Server error' });
+    console.error('Profile update failed:', err); // <- log error clearly
+    res.status(500).json({ msg: 'Server error', error: err.message });
   }
 };
 
