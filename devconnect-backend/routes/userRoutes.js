@@ -17,6 +17,11 @@ router.post('/:id/follow', auth, userController.followUser);
 // Admin: list/search users
 router.get('/', auth, userController.getAllUsers);  // secured by admin check inside controller
 
+// user routes
+router.get('/connections', auth, userController.getConnections);
+
+router.get('/search', userController.searchUsers); // public search
+
 // Get a specific user by ID
 router.get('/:id', auth, userController.getUserById);
 

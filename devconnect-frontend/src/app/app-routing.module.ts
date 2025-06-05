@@ -13,6 +13,8 @@ const routes: Routes = [
   // { path: 'profile', component: ProfileComponent },
   { path: 'profile', loadComponent: () => import('./pages/profile/profile.component').then(m => m.ProfileComponent) },
   { path: 'about', loadComponent: () => import('./pages/about/about.component').then(m => m.AboutComponent) },
+  { path: 'connections', loadComponent: () => import('./pages/connection/connection.component').then(m => m.ConnectionComponent)},
+  { path: 'search', loadComponent: () => import('./pages/search/user-search.component').then(m => m.UserSearchComponent)},
   { path: '**', redirectTo: '' }
 ];
 

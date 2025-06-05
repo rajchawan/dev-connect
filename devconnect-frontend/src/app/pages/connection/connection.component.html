@@ -1,0 +1,36 @@
+<div class="connections-container">
+  <!-- Left Panel -->
+  <div class="sidebar">
+    <div class="card">
+      <h3>Following</h3>
+      <ul>
+        <li *ngFor="let user of following">
+          <img [src]="getUserAvatar(user.avatar)" alt="avatar" />
+          <span>{{ user.name }}</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Followers</h3>
+      <ul>
+        <li *ngFor="let user of followers">
+          <img [src]="getUserAvatar(user.avatar)" alt="avatar" />
+          <span>{{ user.name }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Right Panel -->
+  <div class="users-list">
+    <h2>People You May Know</h2>
+    <div class="user-grid">
+      <div class="user-card" *ngFor="let user of usersToFollow">
+        <img [src]="getUserAvatar(user.avatar)" alt="avatar" />
+        <p>{{ user.name }}</p>
+        <button (click)="followUser(user.id)">Follow</button>
+      </div>
+    </div>
+  </div>
+</div>

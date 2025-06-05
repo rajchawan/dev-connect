@@ -1,0 +1,21 @@
+<div class="search-results-container">
+  <!-- <h3>Search Results for "{{ query }}"</h3> -->
+
+  <div *ngIf="loading" class="loading">Loading...</div>
+  <div *ngIf="!loading && users.length === 0" class="no-results">No users found.</div>
+
+  <div *ngIf="users.length > 0" class="results-list">
+    <div class="user-card" *ngFor="let user of users">
+      <div class="user-info">
+        <img [src]="user.avatar ? 'http://localhost:5000/uploads/' + user.avatar : 'assets/icons/default-avatar.jpg'"
+          alt="avatar" />
+        <div class="user-details">
+          <p class="name">{{ user.name }}</p>
+          <div class="skills" *ngIf="user.skills?.length">
+            <span class="skill-pill" *ngFor="let skill of user.skills">{{ skill }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

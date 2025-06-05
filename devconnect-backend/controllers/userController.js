@@ -113,3 +113,62 @@ exports.getUserById = async (req, res) => {
     res.status(500).json({ msg: 'Server error' });
   }
 };
+
+exports.getConnections = async (req, res) => {
+  try {
+    const currentUser = await User.findByPk(req.user.id);
+    if (!currentUser) {
+      console.error('User not found with ID:', req.user.id);
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    const following = await currentUser.getFollowing({
+      attributes: ['id', 'name', 'avatar']
+    });
+
+    const followers = await currentUser.getFollowers({
+      attributes: ['id', 'name', 'avatar']
+    });
+
+    const followingIds = following.map(user => user.id);
+
+    const usersToFollow = await User.findAll({
+      where: {
+        id: {
+          [Op.notIn]: [...followingIds, req.user.id]
+        }
+      },
+      attributes: ['id', 'name', 'avatar']
+    });
+
+    res.json({ following, followers, usersToFollow });
+  } catch (err) {
+    console.error('Failed to fetch connections:', err);
+    res.status(500).json({ msg: 'Server error', error: err.message });
+  }
+};
+
+exports.searchUsers = async (req, res) => {
+  const { q } = req.query;
+
+  try {
+    const whereCondition = q
+      ? {
+          [Op.or]: [
+            { name: { [Op.iLike]: `%${q}%` } },
+            { email: { [Op.iLike]: `%${q}%` } }
+          ]
+        }
+      : {};
+
+    const users = await User.findAll({
+      where: whereCondition,
+      attributes: ['id', 'name', 'avatar', 'skills'] // ✅ Include 'skills' here
+    });
+
+    res.json(users);
+  } catch (err) {
+    console.error('User search failed:', err);
+    res.status(500).json({ msg: 'Server error' });
+  }
+};

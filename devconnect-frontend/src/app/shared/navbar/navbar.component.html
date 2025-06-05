@@ -18,7 +18,7 @@
   <ng-template #loggedInNav>
     <!-- Search Bar -->
     <div class="search-bar">
-      <input type="text" placeholder="Search..." />
+      <input type="text" [(ngModel)]="searchText" (keyup.enter)="onSearch()" placeholder="Search users..." />
     </div>
 
     <!-- Navigation Icons -->
