@@ -1,13 +1,34 @@
-<div class="profile-container">
-  <div class="profile-card">
-    <div class="avatar">
-      <img src="https://i.pravatar.cc/150?img=12" alt="User Avatar">
-    </div>
-    <div class="user-info">
-      <!-- <h2>{{ user.name }}</h2> -->
-      <p>emxample.com</p>
-      <p>Joined: January 1, 2024</p>
-    </div>
-    <button class="edit-btn">Edit Profile</button>
+<div class="profile-card" *ngIf="user; else loading">
+  <div class="avatar-wrapper">
+    <label for="avatar-upload">
+      <img [src]="getAvatarUrl()" class="avatar" alt="Profile picture" />
+      <div class="upload-icon">
+        <img src="assets/icons/camera-icon.png" alt="Upload" />
+      </div>
+    </label>
+    <input type="file" id="avatar-upload" (change)="onAvatarSelected($event)" hidden />
   </div>
+
+  <form (ngSubmit)="updateProfile()" #profileForm="ngForm">
+    <div class="form-group">
+      <label>Name</label>
+      <input [(ngModel)]="user.name" name="name" required />
+    </div>
+
+    <div class="form-group">
+      <label>Email</label>
+      <input [(ngModel)]="user.email" name="email" required />
+    </div>
+
+    <div class="form-group">
+      <label>Skills (comma separated)</label>
+      <input [(ngModel)]="skills" name="skills" placeholder="e.g. JavaScript, Node.js" />
+    </div>
+
+    <button type="submit" class="save-btn">Save Changes</button>
+  </form>
 </div>
+
+<ng-template #loading>
+  <p>Loading profile...</p>
+</ng-template>
