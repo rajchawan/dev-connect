@@ -1,10 +1,58 @@
 <nav class="navbar">
-  <div class="logo"><a routerLink="/">DevConnect</a></div>
-  <ul class="nav-links">
-    <li><a routerLink="/about">About</a></li>
-    <li *ngIf="!isLoggedIn()"><a routerLink="/login">Sign In</a></li>
-    <li *ngIf="!isLoggedIn()"><a routerLink="/register">Sign Up</a></li>
-    <li *ngIf="isLoggedIn()"><a routerLink="/profile">Profile</a></li>
-    <li *ngIf="isLoggedIn()" (click)="logout()">Logout</li>
-  </ul>
+  <!-- Logo -->
+  <div class="logo">
+    <a routerLink="/">
+      <i class="fas fa-code"></i> DevConnect
+    </a>
+  </div>
+
+  <!-- Guest View -->
+  <ng-container *ngIf="!isLoggedIn(); else loggedInNav">
+    <div class="auth-buttons">
+      <a routerLink="/login" class="pill-button">Sign In</a>
+      <a routerLink="/register" class="pill-button">Sign Up</a>
+    </div>
+  </ng-container>
+
+  <!-- Logged In View -->
+  <ng-template #loggedInNav>
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <input type="text" placeholder="Search..." />
+    </div>
+
+    <!-- Navigation Icons -->
+    <ul class="nav-icons">
+      <li>
+        <a routerLink="/">
+          <i class="fas fa-home"></i>
+          <span>Home</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/connections">
+          <i class="fas fa-user-friends"></i>
+          <span>Connections</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/about">
+          <i class="fas fa-info-circle"></i>
+          <span>About</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/profile">
+          <i class="fas fa-user"></i>
+          <span>Me</span>
+        </a>
+      </li>
+      <li (click)="logout()">
+        <a>
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </a>
+      </li>
+    </ul>
+  </ng-template>
 </nav>
