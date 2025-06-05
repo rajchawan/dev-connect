@@ -1,6 +1,6 @@
 // src/app/post-feed/post-feed.component.ts
 import { Component, OnInit } from '@angular/core';
-import { PostService } from '../services/post.service';
+import { PostService } from '../../services/post.service';
 import { CommonModule } from '@angular/common';
 import { formatDistanceToNow } from 'date-fns';
 

@@ -5,7 +5,7 @@
       <div class="post-header">
         <img class="avatar" [src]="getUserAvatar(post.User?.avatar)" alt="avatar" />
         <div>
-          <strong>{{ post.User?.name || 'Unknown' }}</strong>
+          <strong>{{ post.user?.name || 'Unknown' }}</strong>
           <br />
           <small>Posted {{ getTimeAgo(post.createdAt) }}</small>
         </div>
