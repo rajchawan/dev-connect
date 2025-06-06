@@ -3,33 +3,27 @@ const { Op } = require('sequelize');
 
 exports.createPost = async (req, res) => {
   const { content } = req.body;
+  const image = req.file?.filename;
+
   try {
     const post = await Post.create({
       content,
+      image,
       userId: req.user.id
     });
 
     const fullPost = await Post.findByPk(post.id, {
       include: [
-        {
-          model: User,
-          attributes: ['id', 'name', 'email', 'avatar']
-        },
-        {
-          model: User,
-          as: 'Likes',
-          attributes: ['id']
-        },
-        {
-          model: Comment,
-          attributes: ['id']
-        }
+        { model: User, attributes: ['id', 'name', 'email', 'avatar'] },
+        { model: User, as: 'Likes', attributes: ['id'] },
+        { model: Comment, as: 'Comments', attributes: ['id'] } // FIXED
       ]
     });
 
     res.json({
       id: fullPost.id,
       content: fullPost.content,
+      image: fullPost.image,
       createdAt: fullPost.createdAt,
       user: fullPost.User,
       likesCount: fullPost.Likes.length,
@@ -57,24 +51,25 @@ exports.getPosts = async (req, res) => {
       include: [
         {
           model: User,
-          attributes: ['id', 'name', 'email', 'avatar'] // include avatar
+          attributes: ['id', 'name', 'email', 'avatar']
         },
         {
           model: User,
           as: 'Likes',
-          attributes: ['id'] // for count
+          attributes: ['id']
         },
         {
           model: Comment,
-          attributes: ['id'] // for count
+          as: 'Comments', // FIXED
+          attributes: ['id']
         }
       ]
     });
 
-    // Map response to include counts
     const formatted = posts.map(post => ({
       id: post.id,
       content: post.content,
+      image: post.image,
       createdAt: post.createdAt,
       user: post.User,
       likesCount: post.Likes.length,
@@ -94,14 +89,12 @@ exports.likePost = async (req, res) => {
 
     if (!post) return res.status(404).json({ msg: 'Post not found' });
 
-    // Check if user already liked the post
     const alreadyLiked = await post.hasLike(req.user.id);
 
     if (!alreadyLiked) {
       await post.addLike(req.user.id);
     }
 
-    // Return updated post with likes count
     const updatedPost = await Post.findByPk(req.params.id, {
       include: [
         {

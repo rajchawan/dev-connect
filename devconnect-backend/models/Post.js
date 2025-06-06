@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
           msg: 'Post must be between 1 and 1000 characters'
         }
       }
+    },
+    image: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
   }, {
     timestamps: true
@@ -23,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'postId',
       otherKey: 'userId'
     });
-    Post.hasMany(models.Comment, { foreignKey: 'postId' });
+    Post.hasMany(models.Comment, { foreignKey: 'postId', as: 'Comments' }); // <- ADDED 'as'
     Post.hasMany(models.Notification, { foreignKey: 'postId' });
   };
 

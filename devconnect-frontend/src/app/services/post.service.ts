@@ -15,6 +15,7 @@ export interface Post {
   };
   likesCount: number;
   commentsCount: number;
+  image?: string;  // <-- Add image property here if needed
 }
 
 @Injectable({
@@ -25,11 +26,6 @@ export class PostService {
 
   constructor(private http: HttpClient) {}
 
-  /**
-   * Fetch all posts from the backend.
-   * Automatically includes credentials (cookies) in the request.
-   * @param params - Optional query parameters like page, limit, search
-   */
   getAllPosts(params?: any): Observable<Post[]> {
     return this.http.get<Post[]>(this.apiUrl, {
       withCredentials: true,
@@ -37,19 +33,11 @@ export class PostService {
     });
   }
 
-  /**
-   * Create a new post.
-   * Includes user session via cookies.
-   * @param data - Object with content property
-   */
-  createPost(data: { content: string }): Observable<Post> {
+  // Updated createPost to accept FormData for image upload
+  createPost(data: FormData): Observable<Post> {
     return this.http.post<Post>(this.apiUrl, data, { withCredentials: true });
   }
 
-  /**
-   * Like a post by its ID.
-   * @param postId - ID of the post
-   */
   likePost(postId: string): Observable<Post> {
     return this.http.put<Post>(`${this.apiUrl}/${postId}/like`, {}, { withCredentials: true });
   }

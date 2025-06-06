@@ -40,6 +40,14 @@
   margin-bottom: 1rem;
 }
 
+.post-image {
+  max-width: 100%;
+  margin-top: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  object-fit: cover;
+}
+
 .post-actions {
   display: flex;
   justify-content: space-between;
@@ -88,6 +96,23 @@ button {
       padding: 0.5rem;
       border-radius: 8px;
       border: 1px solid #ccc;
+    }
+  }
+
+  .attach-image {
+    margin-bottom: 0.75rem;
+
+    .attach-label {
+      cursor: pointer;
+      color: #0a66c2;
+      font-weight: 600;
+      user-select: none;
+    }
+
+    span {
+      margin-left: 1rem;
+      font-style: italic;
+      color: #555;
     }
   }
 

@@ -7,6 +7,17 @@
         <img class="avatar" [src]="getUserAvatar(currentUser.avatar)" alt="avatar" />
         <textarea [(ngModel)]="newPostContent" placeholder="What's on your mind?" rows="3"></textarea>
       </div>
+
+      <!-- Image attach button -->
+      <div class="attach-image">
+        <label for="imageInput" class="attach-label" title="Attach Image">
+          <i class="fa-solid fa-upload"></i>
+          <span>Attach Image</span>
+        </label>
+        <input type="file" id="imageInput" (change)="onImageSelected($event)" accept="image/*" hidden />
+        <span *ngIf="selectedImageName">{{ selectedImageName }}</span>
+      </div>
+
       <div class="create-post-actions">
         <button (click)="createPost()" [disabled]="!newPostContent.trim()">Post</button>
       </div>
@@ -25,6 +36,9 @@
 
       <div class="post-content">
         <p>{{ post.content }}</p>
+
+        <img *ngIf="post.image" class="post-image" [src]="'http://localhost:5000/uploads/' + post.image"
+          alt="Post image" />
       </div>
 
       <div class="post-actions">
@@ -37,5 +51,6 @@
         <button>Comment</button>
       </div>
     </div>
+
   </div>
 </div>
