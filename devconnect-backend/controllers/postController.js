@@ -111,3 +111,12 @@ exports.likePost = async (req, res) => {
     res.status(500).json({ msg: 'Server error' });
   }
 };
+
+exports.getLikes = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.postId).populate('likes', 'name avatar');
+    res.json(post.likes);
+  } catch (err) {
+    res.status(500).json({ msg: 'Server error' });
+  }
+};

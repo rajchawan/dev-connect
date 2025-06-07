@@ -8,7 +8,6 @@
         <textarea [(ngModel)]="newPostContent" placeholder="What's on your mind?" rows="3"></textarea>
       </div>
 
-      <!-- Image attach button -->
       <div class="attach-image">
         <label for="imageInput" class="attach-label" title="Attach Image">
           <i class="fa-solid fa-upload"></i>
@@ -28,15 +27,13 @@
       <div class="post-header">
         <img class="avatar" [src]="getUserAvatar(post.user?.avatar)" alt="avatar" />
         <div>
-          <strong>{{ post.user?.name || 'Unknown' }}</strong>
-          <br />
+          <strong>{{ post.user?.name || 'Unknown' }}</strong><br />
           <small>Posted {{ getTimeAgo(post.createdAt) }}</small>
         </div>
       </div>
 
       <div class="post-content">
         <p>{{ post.content }}</p>
-
         <img *ngIf="post.image" class="post-image" [src]="'http://localhost:5000/uploads/' + post.image"
           alt="Post image" />
       </div>
@@ -47,10 +44,20 @@
       </div>
 
       <div class="action-buttons">
-        <button>Like</button>
-        <button>Comment</button>
+        <button (click)="likePost(post.id)">Like</button>
+        <button (click)="toggleComments(post.id)">Comment</button>
+      </div>
+
+      <!-- Comment Section -->
+      <div class="comment-section" *ngIf="showComments[post.id]">
+        <div *ngFor="let comment of commentsMap[post.id]" class="comment">
+          <strong>{{ comment.user?.name }}:</strong> {{ comment.text }}
+        </div>
+        <div class="add-comment">
+          <input [(ngModel)]="commentInputs[post.id]" placeholder="Write a comment..." />
+          <button (click)="addComment(post.id)">Post</button>
+        </div>
       </div>
     </div>
-
   </div>
 </div>
