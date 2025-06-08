@@ -17,7 +17,7 @@ exports.getProfile = async (req, res) => {
 // Update current user's profile
 exports.updateProfile = async (req, res) => {
   console.log('Received file:', req.file); // <-- log this
-  console.log('Received body:', req.body); // <-- and this
+  console.log('Received body:', req.body);
 
   const { name, skills } = req.body;
   const avatar = req.file ? req.file.filename : undefined;
@@ -41,7 +41,7 @@ exports.updateProfile = async (req, res) => {
 
     res.json(updatedUser);
   } catch (err) {
-    console.error('Profile update failed:', err); // <- log error clearly
+    console.error('Profile update failed:', err);
     res.status(500).json({ msg: 'Server error', error: err.message });
   }
 };
@@ -98,7 +98,6 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
-// Get user by ID
 exports.getUserById = async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id, {
@@ -163,7 +162,7 @@ exports.searchUsers = async (req, res) => {
 
     const users = await User.findAll({
       where: whereCondition,
-      attributes: ['id', 'name', 'avatar', 'skills'] // ✅ Include 'skills' here
+      attributes: ['id', 'name', 'avatar', 'skills']
     });
 
     res.json(users);
