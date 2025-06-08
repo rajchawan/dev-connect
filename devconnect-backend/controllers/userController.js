@@ -16,7 +16,7 @@ exports.getProfile = async (req, res) => {
 
 // Update current user's profile
 exports.updateProfile = async (req, res) => {
-  console.log('Received file:', req.file); // <-- log this
+  console.log('Received file:', req.file);
   console.log('Received body:', req.body);
 
   const { name, skills } = req.body;
