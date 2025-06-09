@@ -1,4 +1,4 @@
-const { User } = require('../models');  // Sequelize models
+const { User } = require('../models');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const sendEmail = require('../utils/sendEmail');
