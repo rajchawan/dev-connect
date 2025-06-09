@@ -1,6 +1,6 @@
 const User = require('../models/User');
 const Post = require('../models/Post');
-const Comment = require('../models/Comment'); // Add this line if missing
+const Comment = require('../models/Comment');
 
 exports.getAllUsers = async (req, res) => {
   try {
