@@ -95,7 +95,7 @@ exports.getCurrentUser = async (req, res) => {
       return res.status(401).json({ msg: 'Unauthorized' });
     }
 
-    res.json(req.user);  // assumes req.user is populated by authMiddleware
+    res.json(req.user);
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');
