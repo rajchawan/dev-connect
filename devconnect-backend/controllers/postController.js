@@ -60,7 +60,7 @@ exports.getPosts = async (req, res) => {
         },
         {
           model: Comment,
-          as: 'Comments', // FIXED
+          as: 'Comments',
           attributes: ['id']
         }
       ]
