@@ -20,7 +20,7 @@ router.post(
 router.get('/', auth, postController.getPosts);
 
 // Like a post
-router.put('/:id/like', auth, postController.likePost); // ✅ ADD THIS LINE
+router.put('/:id/like', auth, postController.likePost);
 
 // Get likes for a post
 router.get('/:postId/likes', auth, postController.getLikes);
